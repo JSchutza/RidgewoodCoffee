@@ -8,12 +8,12 @@ import "yet-another-react-lightbox/styles.css";
 
 
 const galleryImages = [
-  { src: '/images/gallery/1.jpg', alt: 'Barista preparing coffee' },
-  { src: '/images/gallery/2.jpg', alt: 'Coffee shop interior' },
-  { src: '/images/gallery/3.jpg', alt: 'Latte art' },
-  { src: '/images/gallery/4.jpg', alt: 'Coffee beans' },
-  { src: '/images/gallery/5.jpg', alt: 'Pastry display' },
-  { src: '/images/gallery/6.jpg', alt: 'Coffee brewing' },
+  { src: '/images/gallery/1.PNG', alt: 'Barista preparing coffee' },
+  { src: '/images/gallery/2.PNG', alt: 'Coffee shop interior' },
+  { src: '/images/gallery/3.PNG', alt: 'Latte art' },
+  { src: '/images/gallery/4.PNG', alt: 'Coffee beans' },
+  { src: '/images/gallery/5.PNG', alt: 'Pastry display' },
+  { src: '/images/gallery/6.PNG', alt: 'Coffee brewing' },
 ];
 
 export default function Gallery() {
