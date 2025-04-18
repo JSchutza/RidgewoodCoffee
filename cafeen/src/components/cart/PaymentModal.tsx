@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
-import { XMarkIcon, CreditCardIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, CreditCardIcon, CheckCircleIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { useCartStore } from '../../store/cartStore';
+import { formatCurrency } from '../../utils/formatters';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -19,11 +20,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
     expiry: '',
     cvv: '',
   });
-  const clearCart = useCartStore(state => state.clearCart);
-
-  const formatPrice = (price: number): string => {
-    return price.toFixed(2);
-  };
+  const { items, clearCart } = useCartStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,6 +52,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
     });
   };
 
+  // Calculate taxes and delivery fee
+  const tax = total * 0.08; // 8% tax
+  const deliveryFee = total > 0 ? 2.99 : 0;
+  const grandTotal = total + tax + deliveryFee;
+
   return (
     <Dialog 
       open={isOpen} 
@@ -65,7 +67,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
       
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="mx-auto max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-amber-50">
             <Dialog.Title className="text-xl font-serif font-bold text-gray-900 flex items-center">
               {paymentStatus === 'success' ? (
                 <>
@@ -74,8 +76,8 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                 </>
               ) : (
                 <>
-                  <CreditCardIcon className="h-6 w-6 mr-2 text-primary-600" />
-                  Payment
+                  <CreditCardIcon className="h-6 w-6 mr-2 text-amber-800" />
+                  Checkout
                 </>
               )}
             </Dialog.Title>
@@ -97,19 +99,47 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                 <p className="text-gray-600 mb-6">Your order has been placed and will be ready soon.</p>
                 <button 
                   onClick={handleCloseAfterSuccess}
-                  className="btn-primary"
+                  className="px-6 py-2 bg-amber-800 text-white rounded-md font-medium hover:bg-amber-700 transition-colors"
                 >
                   Continue Shopping
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-700">Total Amount:</span>
-                    <span className="text-xl font-bold">${formatPrice(total)}</span>
+                {/* Order Summary */}
+                <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-gray-900 mb-3 flex items-center">
+                    <ShoppingBagIcon className="h-5 w-5 mr-2 text-amber-700" />
+                    Order Summary
+                  </h3>
+                  
+                  <div className="space-y-2 mb-3">
+                    {items.map(item => (
+                      <div key={item.product.id} className="flex justify-between text-sm">
+                        <span>{item.quantity} × {item.product.name}</span>
+                        <span>{formatCurrency(item.product.price * item.quantity)}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="h-[1px] bg-gray-200"></div>
+                  
+                  <div className="border-t border-gray-200 pt-3 space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span>Subtotal</span>
+                      <span>{formatCurrency(total)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Tax</span>
+                      <span>{formatCurrency(tax)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span>Delivery Fee</span>
+                      <span>{formatCurrency(deliveryFee)}</span>
+                    </div>
+                    <div className="flex justify-between font-medium text-amber-800 pt-2">
+                      <span>Total</span>
+                      <span>{formatCurrency(grandTotal)}</span>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -123,7 +153,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -138,7 +168,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -153,7 +183,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                     value={formData.address}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                   />
                 </div>
 
@@ -172,7 +202,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                       onChange={handleInputChange}
                       placeholder="1234 5678 9012 3456"
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                     />
                   </div>
 
@@ -189,7 +219,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                         onChange={handleInputChange}
                         placeholder="MM/YY"
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                     <div>
@@ -204,7 +234,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                         onChange={handleInputChange}
                         placeholder="123"
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
                   </div>
@@ -213,13 +243,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                 <button
                   type="submit"
                   disabled={paymentStatus === 'processing'}
-                  className={`w-full py-3 rounded-md font-semibold ${
+                  className={`w-full py-3 rounded-md font-semibold mt-6 ${
                     paymentStatus === 'processing'
                       ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-primary-600 text-white hover:bg-primary-700'
+                      : 'bg-amber-800 text-white hover:bg-amber-700 transition-colors'
                   }`}
                 >
-                  {paymentStatus === 'processing' ? 'Processing...' : 'Pay $' + formatPrice(total)}
+                  {paymentStatus === 'processing' ? 'Processing...' : `Pay ${formatCurrency(grandTotal)}`}
                 </button>
               </form>
             )}

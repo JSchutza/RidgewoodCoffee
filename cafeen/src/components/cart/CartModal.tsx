@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCartStore } from '../../store/cartStore';
-import { XMarkIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, PlusIcon, MinusIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
 import { formatCurrency } from '../../utils/formatters';
 import PaymentModal from './PaymentModal';
 
@@ -14,6 +14,7 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   
   const subtotal = items.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   
   if (!isOpen) return null;
   
@@ -24,8 +25,11 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
         className="bg-white rounded-lg w-full max-w-md mx-auto z-10 overflow-hidden shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-semibold">Your Cart</h2>
+        <div className="p-4 border-b flex justify-between items-center bg-amber-50">
+          <h2 className="text-xl font-semibold flex items-center">
+            <ShoppingBagIcon className="h-6 w-6 mr-2 text-amber-700" />
+            Your Cart {totalItems > 0 && `(${totalItems} ${totalItems === 1 ? 'item' : 'items'})`}
+          </h2>
           <button 
             onClick={onClose}
             className="p-1 rounded-full hover:bg-gray-100"
@@ -37,8 +41,10 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
         
         <div className="max-h-[60vh] overflow-y-auto p-4">
           {items.length === 0 ? (
-            <div className="text-center py-6">
-              <p className="text-gray-500">Your cart is empty</p>
+            <div className="text-center py-12">
+              <ShoppingBagIcon className="h-12 w-12 mx-auto text-gray-300 mb-4" />
+              <p className="text-gray-500 mb-2">Your cart is empty</p>
+              <p className="text-sm text-gray-400">Add items from our menu to get started</p>
             </div>
           ) : (
             <ul className="divide-y">
@@ -48,8 +54,8 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
                     {item.product.image ? (
                       <img src={item.product.image} alt={item.product.name} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="h-full w-full flex items-center justify-center text-gray-400">
-                        No image
+                      <div className="h-full w-full flex items-center justify-center text-gray-400 bg-amber-50">
+                        <span className="text-amber-700 font-medium text-xs">{item.product.category}</span>
                       </div>
                     )}
                   </div>
@@ -57,7 +63,7 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
                   <div className="ml-4 flex-1">
                     <div className="flex justify-between">
                       <h3 className="font-medium">{item.product.name}</h3>
-                      <p className="font-medium">{formatCurrency(item.product.price * item.quantity)}</p>
+                      <p className="font-medium text-amber-800">{formatCurrency(item.product.price * item.quantity)}</p>
                     </div>
                     <p className="mt-1 text-sm text-gray-500">{formatCurrency(item.product.price)} each</p>
                     
@@ -93,22 +99,25 @@ export default function CartModal({ isOpen, onClose }: CartModalProps) {
         </div>
         
         {items.length > 0 && (
-          <div className="border-t p-4">
-            <div className="flex justify-between py-2">
-              <p className="font-medium">Subtotal</p>
-              <p className="font-medium">{formatCurrency(subtotal)}</p>
+          <div className="border-t p-4 bg-amber-50">
+            <div className="flex justify-between py-2 font-medium">
+              <p>Subtotal</p>
+              <p className="text-amber-800">{formatCurrency(subtotal)}</p>
+            </div>
+            <div className="text-sm text-gray-500 mb-4">
+              Taxes and delivery fees calculated at checkout
             </div>
             
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button
                 onClick={clearCart}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
               >
                 Clear Cart
               </button>
               <button
                 onClick={() => setIsPaymentModalOpen(true)}
-                className="px-4 py-2 bg-amber-800 text-white rounded-md text-sm font-medium hover:bg-amber-700"
+                className="px-4 py-3 bg-amber-800 text-white rounded-md text-sm font-medium hover:bg-amber-700 transition-colors"
               >
                 Checkout
               </button>
