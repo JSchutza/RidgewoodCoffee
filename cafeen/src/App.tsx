@@ -1,11 +1,9 @@
 import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import Hero from './components/sections/Hero';
-import About from './components/sections/About';
-import Menu from './components/sections/Menu';
-import Gallery from './components/sections/Gallery';
-import Contact from './components/sections/Contact';
+import HomePage from './pages/HomePage';
+import MenuPage from './pages/MenuPage';
 
 const App: React.FC = () => {
   // Add a simple performance monitoring effect
@@ -18,17 +16,16 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Menu />
-        <Gallery />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/menu" element={<MenuPage />} />
+        </Routes>
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 };
 
