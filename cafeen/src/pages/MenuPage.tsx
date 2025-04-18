@@ -156,7 +156,7 @@ const MenuPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white pt-20">
-      <div className="fixed top-4 right-4 z-40 md:right-8 md:top-6">
+      <div className="fixed top-16 right-4 z-40 md:right-8 md:top-20">
         <CartButton isMenuPage={true} />
       </div>
       

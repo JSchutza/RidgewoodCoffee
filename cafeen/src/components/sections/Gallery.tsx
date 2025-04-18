@@ -95,23 +95,26 @@ const Gallery: React.FC = () => {
           <div className="fixed inset-0 bg-black/70" aria-hidden="true" />
 
           <div className="fixed inset-0 flex items-center justify-center p-4">
-            <Dialog.Panel className="mx-auto max-w-3xl rounded-lg bg-white p-4">
+            <Dialog.Panel className="mx-auto max-w-lg rounded-lg bg-white p-4">
               {selectedImage && (
-                <div className="space-y-4">
-                  <img
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    className="w-full rounded-lg"
-                  />
+                <div className="space-y-3">
+                  <div className="relative max-h-[70vh] overflow-hidden">
+                    <img
+                      src={selectedImage.src}
+                      alt={selectedImage.alt}
+                      className="w-full h-auto max-h-[70vh] object-contain rounded-lg"
+                    />
+                  </div>
                   {selectedImage.caption && (
-                    <p className="text-center text-gray-700">{selectedImage.caption}</p>
+                    <p className="text-center text-sm text-gray-700">{selectedImage.caption}</p>
                   )}
                   <button
                     onClick={() => setSelectedImage(null)}
-                    className="absolute top-2 right-2 bg-white rounded-full p-1"
+                    className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1 shadow-md transition-colors"
+                    aria-label="Close"
                   >
                     <svg 
-                      className="h-6 w-6" 
+                      className="h-5 w-5" 
                       fill="none" 
                       viewBox="0 0 24 24" 
                       stroke="currentColor"

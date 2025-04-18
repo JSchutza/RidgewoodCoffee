@@ -66,17 +66,17 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden">
-          <div className="flex justify-between items-center p-4 border-b border-gray-200 bg-amber-50">
-            <Dialog.Title className="text-xl font-serif font-bold text-gray-900 flex items-center">
+        <Dialog.Panel className="mx-auto max-w-md w-full bg-white rounded-lg shadow-xl overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="flex justify-between items-center p-3 border-b border-gray-200 bg-amber-50 flex-shrink-0">
+            <Dialog.Title className="text-lg font-serif font-bold text-gray-900 flex items-center">
               {paymentStatus === 'success' ? (
                 <>
-                  <CheckCircleIcon className="h-6 w-6 mr-2 text-green-600" />
+                  <CheckCircleIcon className="h-5 w-5 mr-2 text-green-600" />
                   Order Complete
                 </>
               ) : (
                 <>
-                  <CreditCardIcon className="h-6 w-6 mr-2 text-amber-800" />
+                  <CreditCardIcon className="h-5 w-5 mr-2 text-amber-800" />
                   Checkout
                 </>
               )}
@@ -86,12 +86,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                 onClick={paymentStatus === 'success' ? handleCloseAfterSuccess : onClose}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <XMarkIcon className="h-6 w-6" />
+                <XMarkIcon className="h-5 w-5" />
               </button>
             )}
           </div>
 
-          <div className="p-6">
+          <div className="overflow-y-auto p-4 flex-grow">
             {paymentStatus === 'success' ? (
               <div className="text-center py-8">
                 <CheckCircleIcon className="h-16 w-16 mx-auto text-green-600 mb-4" />
@@ -105,75 +105,79 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Order Summary */}
-                <div className="mb-6 bg-gray-50 p-4 rounded-lg">
-                  <h3 className="font-medium text-gray-900 mb-3 flex items-center">
-                    <ShoppingBagIcon className="h-5 w-5 mr-2 text-amber-700" />
+              <form onSubmit={handleSubmit} className="space-y-3">
+                {/* Order Summary - More compact */}
+                <div className="mb-4 bg-gray-50 p-3 rounded-lg">
+                  <h3 className="font-medium text-gray-900 mb-2 flex items-center text-sm">
+                    <ShoppingBagIcon className="h-4 w-4 mr-1 text-amber-700" />
                     Order Summary
                   </h3>
                   
-                  <div className="space-y-2 mb-3">
-                    {items.map(item => (
-                      <div key={item.product.id} className="flex justify-between text-sm">
-                        <span>{item.quantity} × {item.product.name}</span>
-                        <span>{formatCurrency(item.product.price * item.quantity)}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {items.length > 0 && (
+                    <div className="text-xs space-y-1 mb-2 max-h-20 overflow-y-auto">
+                      {items.map(item => (
+                        <div key={item.product.id} className="flex justify-between">
+                          <span>{item.quantity} × {item.product.name}</span>
+                          <span>{formatCurrency(item.product.price * item.quantity)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   
-                  <div className="border-t border-gray-200 pt-3 space-y-1">
-                    <div className="flex justify-between text-sm">
+                  <div className="border-t border-gray-200 pt-2 space-y-1 text-xs">
+                    <div className="flex justify-between">
                       <span>Subtotal</span>
                       <span>{formatCurrency(total)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between">
                       <span>Tax</span>
                       <span>{formatCurrency(tax)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between">
                       <span>Delivery Fee</span>
                       <span>{formatCurrency(deliveryFee)}</span>
                     </div>
-                    <div className="flex justify-between font-medium text-amber-800 pt-2">
+                    <div className="flex justify-between font-medium text-amber-800 pt-1">
                       <span>Total</span>
                       <span>{formatCurrency(grandTotal)}</span>
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="name" className="block text-xs font-medium text-gray-700 mb-1">
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="address" className="block text-xs font-medium text-gray-700 mb-1">
                     Delivery Address
                   </label>
                   <input
@@ -183,15 +187,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                     value={formData.address}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
                   />
                 </div>
 
-                <div className="pt-4 border-t border-gray-200">
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Payment Details</h3>
+                <div className="pt-2 border-t border-gray-200">
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Payment Details</h3>
                   
                   <div>
-                    <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="cardNumber" className="block text-xs font-medium text-gray-700 mb-1">
                       Card Number
                     </label>
                     <input
@@ -202,13 +206,13 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                       onChange={handleInputChange}
                       placeholder="1234 5678 9012 3456"
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="grid grid-cols-2 gap-3 mt-2">
                     <div>
-                      <label htmlFor="expiry" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="expiry" className="block text-xs font-medium text-gray-700 mb-1">
                         Expiry Date
                       </label>
                       <input
@@ -219,11 +223,11 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                         onChange={handleInputChange}
                         placeholder="MM/YY"
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
                       />
                     </div>
                     <div>
-                      <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label htmlFor="cvv" className="block text-xs font-medium text-gray-700 mb-1">
                         CVV
                       </label>
                       <input
@@ -234,7 +238,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                         onChange={handleInputChange}
                         placeholder="123"
                         required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-amber-500"
                       />
                     </div>
                   </div>
@@ -243,7 +247,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, total }) =
                 <button
                   type="submit"
                   disabled={paymentStatus === 'processing'}
-                  className={`w-full py-3 rounded-md font-semibold mt-6 ${
+                  className={`w-full py-2 rounded-md font-medium mt-3 text-sm ${
                     paymentStatus === 'processing'
                       ? 'bg-gray-400 cursor-not-allowed'
                       : 'bg-amber-800 text-white hover:bg-amber-700 transition-colors'
