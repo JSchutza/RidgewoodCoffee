@@ -175,9 +175,11 @@ const Gallery: React.FC = () => {
                   </div>
                   
                   {/* Image counter */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
-                    {selectedImageIndex + 1} / {galleryImages.length}
-                  </div>
+                  {selectedImageIndex !== null && (
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-2 py-1 rounded-full text-xs">
+                      {selectedImageIndex + 1} / {galleryImages.length}
+                    </div>
+                  )}
                 </div>
               )}
             </Dialog.Panel>
